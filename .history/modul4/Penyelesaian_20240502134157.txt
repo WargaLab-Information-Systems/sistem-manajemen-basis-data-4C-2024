@@ -1,0 +1,74 @@
+-- Menampilkan data di urutkan berdasarkan ASC, DESC, ORDER BY
+SELECT * FROM karyawan ORDER BY nama ASC;
+
+SELECT * FROM departemen ORDER BY nama_departemen DESC;
+
+SELECT * FROM proyek ORDER BY id_proyek ASC;
+
+SELECT * FROM proyek ORDER BY id_proyek ASC;
+
+SELECT * FROM evaluasikinerja ORDER BY id_karyawan ASC;
+
+
+
+-- Soal 2 SQL menggunakan klausa Order By, Group By, dan Having
+SELECT id_departemen, COUNT(id_karyawan) AS jumlah_karyawan
+FROM departemen 
+JOIN karyawan  ON id_departemen = id_departemen
+GROUP BY id_departemen
+HAVING COUNT(id_karyawan) > 1
+ORDER BY jumlah_karyawan DESC;
+
+
+
+-- Soal 3 Tampilkan data berdasarkan rentang tanggal
+SELECT *
+FROM absensi
+WHERE tanggal BETWEEN '2024-03-01' AND '2024-03-10';
+
+
+-- soal 4 Tampilkan “produk/barang/jasa” atau data sejenis yang paling banyak muncul pada studi kasus
+SELECT nama_departemen, COUNT(*) AS jumlah_kemunculan
+FROM departemen
+GROUP BY nama_departemen
+ORDER BY jumlah_kemunculan DESC
+LIMIT 1;
+
+
+
+-- Soal 5 Tampilkan“produk/barang/jasa” atau data sejenis yang paling sedikit muncul pada studi kasus
+SELECT kota, COUNT(*) AS jumlah_karyawan
+FROM karyawan
+GROUP BY kota
+ORDER BY jumlah_karyawan ASC
+LIMIT 1;
+
+
+
+-- Soal 6 Tampilkan“produk/barang/jasa” atau data sejenis berdasarkan studi kasus yang dipilih yang memiliki huruf “a” didepan katanya
+SELECT *
+FROM karyawan
+WHERE nama LIKE 'A%'
+
+
+
+-- Soal 7 Cari “konsumen/user” atau data sejenis yang yang paling banyak melakukan transaksi
+SELECT id_karyawan, COUNT(*) AS jumlah_absensi
+FROM absensi
+GROUP BY id_karyawan
+ORDER BY jumlah_absensi DESC
+LIMIT 1;
+
+
+
+-- Soal 8 Cari “konsumen/user” atau data sejenis yang melakukan transaksi lebih dari 3
+SELECT id_karyawan, COUNT(*) AS jumlah_absensi
+FROM absensi
+GROUP BY id_karyawan
+HAVING COUNT(*) > 3;
+
+
+-- Soal 9 Tampilkan data seluruh “konsumen/user” atau data sejenis mulai dari data diri, dan data melakukan transaksi apa saja
+SELECT k.id_karyawan, k.nama, k.jabatan, a.tanggal, a.jam_masuk, a.jam_pulang
+FROM karyawan k
+LEFT JOIN absensi a ON k.id_karyawan = a.id_karyawan;
