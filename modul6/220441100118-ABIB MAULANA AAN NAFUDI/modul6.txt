@@ -1,0 +1,48 @@
+#1. Prosedur tersimpan untuk memeriksa apakah departemen paling banyak diminati atau tidak
+PEMBATAS //
+
+BUAT PROSEDUR CekDepartemenTerpopuler(
+    DI id_departemen_input INT
+)
+MULAI
+    DECLARE jumlah_anggota INT ;
+
+    PILIH JUMLAH(*) KE jumlah_anggota
+    DARI anggota
+    DI MANA id_departemen = id_departemen_input;
+
+    JIKA jumlah_anggota > 2 MAKA
+        SELECT CONCAT('Departemen dengan ID ', id_departemen_input, 'paling banyak diminati') AS STATUS;
+    KALAU TIDAK
+        SELECT CONCAT( ' Departemen dengan ID ' , id_departemen_input, ' tidak banyak diminati ' ) AS STATUS;
+    BERAKHIR JIKA;
+AKHIR //
+
+PEMBATAS ;
+
+
+CALL CekDepartemenTerpopuler( 101 );
+
+#2. WHILE untuk menampilkan data dari tabel Mahasiswa masing-masing dengan ID yang berurutan dari 1 hingga 10
+PEMBATAS //
+
+BUAT PROSEDUR TampilkanMahasiswa()
+MULAI
+    MENYATAKAN id_saat_ini INT DEFAULT 1;
+    DECLARE hasil TEKS DEFAULT ' ' ;
+
+    SAAT id_saat_ini <= 10 LAKUKAN
+
+        PILIH CONCAT(hasil, 'ID: ', ID, ', Nama: ', Nama, '\n') KE hasil
+        DARI Mahasiswa
+        DIMANA ID = id_saat_ini;
+
+        SET id_saat_ini = id_saat_ini +  1 ;
+    BERAKHIR SEMENTARA;
+
+    SELECT hasil SEBAGAI 'Data Mahasiswa';
+AKHIR //
+
+PEMBATAS ;
+
+CALL Tampilkan Mahasiswa;

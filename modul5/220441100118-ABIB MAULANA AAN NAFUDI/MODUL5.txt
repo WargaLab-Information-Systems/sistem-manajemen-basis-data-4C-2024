@@ -1,0 +1,93 @@
+
+-- mmodul 5
+
+-- soal 1
+DELIMITER //
+
+CREATE PROCEDURE HitungHariSejakTransaksiTerakhir (
+    IN idAnggota VARCHAR(10), 
+    OUT HariSejakTransaksiTerakhir INT
+)
+BEGIN
+    DECLARE tglTransaksiTerakhir DATE;
+
+    SELECT MAX(Tanggal_Pinjam) INTO tglTransaksiTerakhir
+    FROM peminjaman
+    WHERE IdAnggota = idAnggota;
+
+    SET HariSejakTransaksiTerakhir = DATEDIFF(CURDATE(), tglTransaksiTerakhir);
+END //
+
+DELIMITER ;
+
+-- Menggunakan stored procedure
+SET @idAnggota = '100';
+CALL HitungHariSejakTransaksiTerakhir(@idAnggota, @HariSejakTransaksiTerakhir);
+SELECT @HariSejakTransaksiTerakhir AS HariSejakTransaksiTerakhir;
+
+
+-- soal 2
+DELIMITER //
+
+CREATE PROCEDURE HitungTransaksiBulananProduk (
+    IN kodeBuku VARCHAR(10),
+    IN tahun INT, 
+    IN bulan INT, 
+    OUT jumlahTransaksi INT
+)
+BEGIN
+    SELECT COUNT(*) INTO jumlahTransaksi
+    FROM peminjaman
+    WHERE Kode_Buku = kodeBuku
+      AND YEAR(Tanggal_Pinjam) = tahun
+      AND MONTH(Tanggal_Pinjam) = bulan;
+END //
+
+DELIMITER ;
+
+-- Menggunakan stored procedure
+SET @kodeBuku = '210';
+SET @tahun = 2024;
+SET @bulan = 5;
+CALL HitungTransaksiBulananProduk(@kodeBuku, @tahun, @bulan, @jumlahTransaksi);
+SELECT @jumlahTransaksi;
+
+
+SELECT * FROM peminjaman
+WHERE Kode_Buku = '210'
+  AND YEAR(Tanggal_Pinjam) = 2024
+  AND MONTH(Tanggal_Pinjam) = 5;
+  
+  
+  INSERT INTO peminjaman (Kode_Peminjaman, IdAnggota, IdPetugas, Tanggal_Pinjam, Tanggal_Kembali, Kode_Buku)
+VALUES ('50', '105', '001', '2024-05-15', '2024-05-22', '210');
+
+
+-- soal 3
+DELIMITER //
+
+CREATE PROCEDURE TambahPeminjaman (
+    IN idPeminjaman VARCHAR(10),
+    IN idAnggota VARCHAR(10), 
+    IN idPetugas VARCHAR(10), 
+    IN kodeBuku VARCHAR(10),
+    IN tanggalKembali DATE
+)
+BEGIN
+    INSERT INTO peminjaman (Kode_Peminjaman, IdAnggota, IdPetugas, Tanggal_Pinjam, Tanggal_Kembali, Kode_Buku)
+    VALUES (idPeminjaman, idAnggota, idPetugas, CURDATE(), tanggalKembali, kodeBuku);
+END //
+
+DELIMITER ;
+
+-- Menggunakan stored procedure
+SET @idPeminjaman = '20';
+SET @idAnggota = '105';
+SET @idPetugas = '001';
+SET @kodeBuku = '207';
+SET @tanggalKembali = '2024-10-31';
+CALL TambahPeminjaman(@idPeminjaman, @idAnggota, @idPetugas, @kodeBuku, @tanggalKembali);
+
+-- Memverifikasi data baru
+SELECT * FROM peminjaman 
+WHERE Kode_Peminjaman = @idPeminjaman AND IdAnggota = @idAnggota AND Kode_Buku = @kodeBuku AND Tanggal_Kembali = @tanggalKembali;
